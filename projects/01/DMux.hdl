@@ -1,15 +1,12 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/01/DMux.hdl
-/**
- * Demultiplexor:
- * [a, b] = ((sel == 0), [in, 0], [0, in])
- */
 CHIP DMux {
     IN in, sel;
     OUT a, b;
 
     PARTS:
-    //// Replace this comment with your code.
+    And(a=sel, b=sel, out=isSelTrue);
+    And(a=in, b=in, out=isInTrue);
+    And(a=isSelTrue, b=in, out=areBothTrue, out=b);
+    Not(in=isSelTrue, out=isSelFalse);
+    And(a=isSelFalse, b=isInTrue, out=a);
 }
+
