@@ -1,7 +1,3 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/02/ALU.hdl
 /**
  * ALU (Arithmetic Logic Unit):
  * Computes out = one of the following functions:
@@ -26,19 +22,40 @@
 // if (f == 0)  sets out = x & y  // bitwise and
 // if (no == 1) sets out = !out   // bitwise not
 CHIP ALU {
-    IN  
-        x[16], y[16],  // 16-bit inputs        
+    IN
+        x[16], y[16],  // 16-bit inputs
         zx, // zero the x input?
         nx, // negate the x input?
         zy, // zero the y input?
         ny, // negate the y input?
         f,  // compute (out = x + y) or (out = x & y)?
         no; // negate the out output?
-    OUT 
+    OUT
         out[16], // 16-bit output
         zr,      // (out == 0, 1, 0)
         ng;      // (out < 0,  1, 0)
 
     PARTS:
-    //// Replace this comment with your code.
-}
+    Mux16(a=x, b=false, sel=zx, out=zeroedX);
+    Not16(in=zeroedX, out=nottedX);
+    Mux16(a=zeroedX, b=nottedX, sel=nx, out=processedX);
+
+    Mux16(a=y, b=false, sel=zy, out=zeroedY);
+    Not16(in=zeroedY, out=nottedY);
+    Mux16(a=zeroedY, b=nottedY, sel=ny, out=processedY);
+
+    Add16(a=processedX, b=processedY, out=xAndYAdd);
+    And16(a=processedX, b=processedY, out=xAndYAnd);
+    Mux16(a=xAndYAnd, b=xAndYAdd, sel=f, out=resolvedFunction);
+
+    Not16(in=resolvedFunction, out=nottedResolvedFunction);
+    
+    Mux16(a=resolvedFunction, b=nottedResolvedFunction, sel=no, out[0..7]=firstHalfOfFinalResult, out[8..15]=secondHalfOfFinalResult, out=out, out[15]=isLastBitTrue);
+    
+    Or8Way(in=firstHalfOfFinalResult, out=any1sInFirstHalf);
+    Or8Way(in=secondHalfOfFinalResult, out=any1sInSecondHalf);
+    Or(a=any1sInFirstHalf, b=any1sInSecondHalf, out=finalResultIsNotZero);
+    Mux(a=true, b=false, sel=finalResultIsNotZero, out=zr);
+
+    Mux(a=false, b=true, sel=isLastBitTrue, out=ng);
+}   
