@@ -1,3 +1,7 @@
+/**
+ * Exclusive-or gate:
+ * out = (not(a) and b) or (a and not(b))
+ */
 CHIP Xor {
     IN a, b;
     OUT out;
