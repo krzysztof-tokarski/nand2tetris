@@ -13,5 +13,19 @@ CHIP RAM64 {
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    // Last 3 bits specify at which register's range is the current address arg within
+    // e.g. 111 = [56..63], 110 = [48..55] etc.
+    DMux8Way(in=load, sel=address[3..5], a=first8, b=second8, c=third8, d=fourth8, e=fifth8, f=sixth8, g=seventh8, h=eight8);
+
+    // First 3 bits allow to select (eventually) correct Register from the relevant RAM8
+    RAM8(in=in, address=address[0..2], load=first8, out=ram1);
+    RAM8(in=in, address=address[0..2], load=second8, out=ram2);
+    RAM8(in=in, address=address[0..2], load=third8, out=ram3);
+    RAM8(in=in, address=address[0..2], load=fourth8, out=ram4);
+    RAM8(in=in, address=address[0..2], load=fifth8, out=ram5);
+    RAM8(in=in, address=address[0..2], load=sixth8, out=ram6);
+    RAM8(in=in, address=address[0..2], load=seventh8, out=ram7);
+    RAM8(in=in, address=address[0..2], load=eight8, out=ram8);
+
+    Mux8Way16(sel=address[3..5], a=ram1, b=ram2, c=ram3, d=ram4, e=ram5, f=ram6, g=ram7, h=ram8, out=out);
 }
