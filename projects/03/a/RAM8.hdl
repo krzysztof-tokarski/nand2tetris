@@ -9,9 +9,9 @@ CHIP RAM8 {
     OUT out[16];
 
     PARTS:
-    /**
-    * Insert load argument to the "table" of outs at proper spot, if load is a truthy it will be *  * the only truthy value inside the table, if its a falsy all arrays elements will be falsies.
-    */
+    // Insert load argument to the "table" of outs at proper spot, if load is a truthy it 
+    // will be the only truthy value inside the table, if its a falsy all arrays elements 
+    // will be falsies.
     DMux8Way(in=load, sel=address, a=isLoadReg1, b=isLoadReg2, c=isLoadReg3, d=isLoadReg4, e=isLoadReg5, f=isLoadReg6, g=isLoadReg7, h=isLoadReg8);
 
     Register(in=in, load=isLoadReg1, out=reg1);
