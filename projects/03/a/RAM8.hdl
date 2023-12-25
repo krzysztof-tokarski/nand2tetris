@@ -1,7 +1,3 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/03/a/RAM8.hdl
 /**
  * Memory of eight 16-bit registers.
  * If load is asserted, the value of the register selected by
@@ -13,5 +9,19 @@ CHIP RAM8 {
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    /**
+    * Insert load argument to the "table" of outs at proper spot, if load is a truthy it will be *  * the only truthy value inside the table, if its a falsy all arrays elements will be falsies.
+    */
+    DMux8Way(in=load, sel=address, a=isLoadReg1, b=isLoadReg2, c=isLoadReg3, d=isLoadReg4, e=isLoadReg5, f=isLoadReg6, g=isLoadReg7, h=isLoadReg8);
+
+    Register(in=in, load=isLoadReg1, out=reg1);
+    Register(in=in, load=isLoadReg2, out=reg2);
+    Register(in=in, load=isLoadReg3, out=reg3);
+    Register(in=in, load=isLoadReg4, out=reg4);
+    Register(in=in, load=isLoadReg5, out=reg5);
+    Register(in=in, load=isLoadReg6, out=reg6);
+    Register(in=in, load=isLoadReg7, out=reg7);
+    Register(in=in, load=isLoadReg8, out=reg8);
+
+    Mux8Way16(a=reg1, b=reg2, c=reg3, d=reg4, e=reg5, f=reg6, g=reg7, h=reg8, sel=address, out=out);
 }
