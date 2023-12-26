@@ -1,22 +1,31 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/03/a/PC.hdl
-
 /**
  * A 16-bit counter with increment, load, and reset modes.
- * if      (inc(t) == 1)   out(t+1) = out(t) + 1
- * else if (load(t) == 1)  out(t+1) = in(t)
- * else if (reset(t) == 1) out(t+1) = 0
- * else                    out(t+1) = out(t).
+ * if      (inc(t) == 1)   out(t+1) = return stored value + 1;
+ * else if (load(t) == 1)  out(t+1) = return input from cycle t;
+ * else if (reset(t) == 1) out(t+1) = return 0;
+ * else                    out(t+1) = return stored value;
  *
  * To select a mode, assert the relevant control bit,
  * and de-assert the other two bits. 
  */
 CHIP PC {
-    IN in[16],inc, load, reset;
+    IN in[16], inc, load, reset;
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    // Increment stored value;
+    Inc16(in=storedValue, out=incrementedStoredValue);
+    
+    // Take current store value or incremented one
+    Mux16(a=storedValue, b=incrementedStoredValue, sel=inc, out=processedStoredValue);
+    
+    // Take input or processedStoredValue;
+    Mux16(a=processedStoredValue, b=in, sel=load, out=inputOrProcessedStoredValue);
+
+    // Reset
+    Mux16(a=inputOrProcessedStoredValue, b=false, sel=reset, out=finalInputToRegister);
+
+    // Set load as fixed true as we always provide new value to be saved, this 
+    // cant be avoided without adding extra chips
+    Register(in=finalInputToRegister, load=true, out=out, out=storedValue);
 }
