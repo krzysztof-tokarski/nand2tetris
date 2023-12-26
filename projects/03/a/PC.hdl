@@ -27,5 +27,6 @@ CHIP PC {
 
     // Set load as fixed true as we always provide new value to be saved, this 
     // cant be avoided without adding extra chips
+    // Inputted load arg only decides if we should care about arg param
     Register(in=finalInputToRegister, load=true, out=out, out=storedValue);
 }
